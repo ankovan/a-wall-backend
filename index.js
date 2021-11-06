@@ -37,7 +37,7 @@ express()
   .post('/posts', async (req, res) => {
     try {
       const client = await pool.connect();
-      const result = await client.query(`INSERT INTO posts (username, message) VALUES (${req.body.username}, ${req.body.message});`);
+      const result = await client.query(`INSERT INTO posts (username, message) VALUES ('${req.body.username}', '${req.body.message}');`);
       res.json({status: "ok"});
     } catch (err) {
       console.error(err);
