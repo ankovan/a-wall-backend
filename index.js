@@ -25,7 +25,7 @@ express()
   .get('/posts', async (req, res) => {
     try {
       const client = await pool.connect();
-      const result = await client.query('SELECT * FROM posts');
+      const result = await client.query('SELECT * FROM posts ORDER BY date DESC');
       const results = { 'results': (result) ? result.rows : null};
       // res.render('pages/db', results );
       res.json(results);
