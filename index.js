@@ -24,7 +24,7 @@ express()
   .get('/', (req, res) => res.render('pages/index'))
   .get('/posts', async (req, res) => {
     try {
-      // const client = await pool.connect();
+      const client = await pool.connect();
       const result = await client.query('SELECT * FROM posts');
       const results = { 'results': (result) ? result.rows : null};
       // res.render('pages/db', results );
@@ -36,7 +36,8 @@ express()
   })
   .post('/posts', async (req, res) => {
     try {
-      await client.query(`INSERT INTO posts (username, message) VALUES (${req.body.username}, ${req.body.message});`);
+      const client = await pool.connect();
+      const result = await client.query(`INSERT INTO posts (username, message) VALUES (${req.body.username}, ${req.body.message});`);
       res.json({status: "ok"});
     } catch (err) {
       console.error(err);
