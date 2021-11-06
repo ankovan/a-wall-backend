@@ -17,10 +17,10 @@ express()
   .get('/db', async (req, res) => {
     try {
       const client = await pool.connect();
-      const result = await client.query('SELECT * FROM test_table');
+      const result = await client.query('SELECT * FROM posts');
       const results = { 'results': (result) ? result.rows : null};
-      res.render('pages/db', results );
-      client.release();
+      // res.render('pages/db', results );
+      res.send(result);
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
