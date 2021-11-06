@@ -20,7 +20,7 @@ express()
       const result = await client.query('SELECT * FROM posts');
       const results = { 'results': (result) ? result.rows : null};
       // res.render('pages/db', results );
-      res.send(result);
+      res.json(results);
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
