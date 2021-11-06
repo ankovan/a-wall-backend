@@ -7,6 +7,7 @@ const pool = new Pool({
 });
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
 const path = require('path')
 const PORT = process.env.PORT || 5000
@@ -14,16 +15,33 @@ const PORT = process.env.PORT || 5000
 express()
   .use(cors({origin: "*"}))
   .use(express.static(path.join(__dirname, 'public')))
+  .use(bodyParser.json())     // to support JSON-encoded bodies
+  .use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+  }))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
-  .get('/db', async (req, res) => {
+  .get('/posts', async (req, res) => {
     try {
       const client = await pool.connect();
       const result = await client.query('SELECT * FROM posts');
       const results = { 'results': (result) ? result.rows : null};
       // res.render('pages/db', results );
       res.json(results);
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+  })
+  .post('/posts', async (req, res) => {
+    try {
+      const client = await pool.connect();
+      const result = await client.query(`INSERT INTO posts (username, message) VALUES (${req.body.username}, ${req.body.message});`);
+      res.json({status: "ok"});
+      // const results = { 'results': (result) ? result.rows : null};
+      // res.render('pages/db', results );
+      // res.json(results);
     } catch (err) {
       console.error(err);
       res.send("Error " + err);
